@@ -9,8 +9,8 @@ class Request {
 		if (!options.url) throw new Error('The "url" option is required.');
 		this.url = new URL(options.url);
 		if (options.query) {
-			this.query = options.query;
-			this.setQuery(this.query);
+			this.queryParams = options.query;
+			this.query(this.queryParams);
 		}
 		this.method = options.method ? options.method.toUpperCase() : 'GET';
 		if (!METHODS.includes(this.method)) throw new Error(`The method "${this.method}" is not supported.`);
@@ -81,7 +81,7 @@ class Request {
 		);
 	}
 
-	setQuery(query) {
+	query(query) {
 		if (typeof query === 'object') {
 			for (const [param, val] of Object.entries(query)) this.url.searchParams.append(param, val);
 			console.log(this.url);
