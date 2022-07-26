@@ -27,7 +27,7 @@ interface Response {
 	body: ResponseBody | null;
 }
 
-type StaticRequest = (url: string, options?: RequestOptions) => Request;
+type StaticRequest = (options: RequestOptions) => Request;
 
 declare class Request extends Promise<Response> {
 	public static acl: StaticRequest;
