@@ -8,6 +8,10 @@ class Request {
 	constructor(options) {
 		if (!options.url) throw new Error('The "url" option is required.');
 		this.url = new URL(options.url);
+		if (options.query) {
+			this.query = options.query;
+			this.setQuery(this.query);
+		}
 		this.method = options.method ? options.method.toUpperCase() : 'GET';
 		if (!METHODS.includes(this.method)) throw new Error(`The method "${this.method}" is not supported.`);
 		this.headers = options.headers || {};
@@ -77,13 +81,12 @@ class Request {
 		);
 	}
 
-	query(queryOrName, value) {
-		if (typeof queryOrName === 'object') {
-			for (const [param, val] of Object.entries(queryOrName)) this.url.searchParams.append(param, val);
-		} else if (typeof queryOrName === 'string' && value) {
-			this.url.searchParams.append(queryOrName, value);
+	setQuery(query) {
+		if (typeof query === 'object') {
+			for (const [param, val] of Object.entries(query)) this.url.searchParams.append(param, val);
+			console.log(this.url);
 		} else {
-			throw new TypeError('The "query" parameter must be either an object or a query field.');
+			throw new TypeError('The "query" parameter must be an object');
 		}
 		return this;
 	}
@@ -140,7 +143,7 @@ class Request {
 
 for (const method of METHODS) {
 	if (!/^[A-Z$_]+$/gi.test(method)) continue;
-	Request[method.toLowerCase()] = (url, options) => new Request({ url, method, ...options });
+	Request[method.toLowerCase()] = options => new Request({ method, ...options });
 }
 
 Request.version = version;
