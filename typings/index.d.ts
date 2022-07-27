@@ -4,7 +4,6 @@ type KVObject = { [name: string]: string };
 
 type RequestBody = null | string | Buffer | Blob | NodeJS.ReadableStream;
 interface RequestOptions {
-	url: string;
 	method?: string;
 	query?: KVObject;
 	headers?: KVObject;
@@ -27,7 +26,10 @@ interface Response {
 	body: ResponseBody | null;
 }
 
-type StaticRequest = (options: RequestOptions) => Request;
+type StaticRequest = (...args: (
+    | [url: string, options?: RequestOptions]
+    | [options: {url: string} & RequestOptions]
+  )) => Request;
 
 declare class Request extends Promise<Response> {
 	public static acl: StaticRequest;

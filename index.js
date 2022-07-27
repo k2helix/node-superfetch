@@ -7,13 +7,14 @@ const { version } = require('./package');
 class Request {
 	constructor(options) {
 		if (!options.url) throw new Error('The "url" option is required.');
+		this.method = options.method ? options.method.toUpperCase() : 'GET';
+		if (!METHODS.includes(this.method)) throw new Error(`The method "${this.method}" is not supported.`);
+		if (typeof options.url === 'object') options = options.url; // if only an object was passed
 		this.url = new URL(options.url);
 		if (options.query) {
 			this.queryParams = options.query;
 			this.query(this.queryParams);
 		}
-		this.method = options.method ? options.method.toUpperCase() : 'GET';
-		if (!METHODS.includes(this.method)) throw new Error(`The method "${this.method}" is not supported.`);
 		this.headers = options.headers || {};
 		this.body = options.body || null;
 		this.redirectCount = typeof options.redirects === 'undefined' ? 20 : options.redirects;
@@ -143,7 +144,7 @@ class Request {
 
 for (const method of METHODS) {
 	if (!/^[A-Z$_]+$/gi.test(method)) continue;
-	Request[method.toLowerCase()] = options => new Request({ method, ...options });
+	Request[method.toLowerCase()] = (url, options) => new Request({ url, method, ...options });
 }
 
 Request.version = version;
