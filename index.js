@@ -85,7 +85,6 @@ class Request {
 	query(query) {
 		if (typeof query === 'object') {
 			for (const [param, val] of Object.entries(query)) this.url.searchParams.append(param, val);
-			console.log(this.url);
 		} else {
 			throw new TypeError('The "query" parameter must be an object');
 		}
